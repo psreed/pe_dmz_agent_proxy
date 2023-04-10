@@ -4,9 +4,12 @@
   "author": "Paul Reed",
   "summary": "",
   "license": "Apache-2.0",
-  "source": "",
+  "source": "https://github.com/psreed/pe_dmz_agent_proxy.git",
   "dependencies": [
-
+    {
+      "name": "puppet/nginx",
+      "version_requirement": ">= 4.3.0 < 5.0.0"
+    }
   ],
   "operatingsystem_support": [
     {
