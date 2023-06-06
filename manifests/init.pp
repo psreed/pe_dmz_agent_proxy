@@ -25,7 +25,7 @@ class pe_dmz_agent_proxy (
   include nginx
 
   if ($enable_puppet) {
-    nginx::resource::upstream { "${upstream_puppet_server}:8140":
+    nginx::resource::upstream { "${upstream_puppet_server}_8140":
       members => {
         "${upstream_puppet_server}:8140" => {
           server => $upstream_puppet_server,
@@ -34,12 +34,12 @@ class pe_dmz_agent_proxy (
         },
       },
     }
-    nginx::resource::server { "${server_name}:8140":
-      proxy => "${upstream_puppet_server}:8140",
+    nginx::resource::server { "${server_name}_8140":
+      proxy => "${upstream_puppet_server}_8140",
     }
   }
   if ($enable_pxp) {
-    nginx::resource::upstream { "${upstream_puppet_server}:8142":
+    nginx::resource::upstream { "${upstream_puppet_server}_8142":
       members => {
         "${upstream_puppet_server}:8142" => {
           server => $upstream_puppet_server,
@@ -48,8 +48,8 @@ class pe_dmz_agent_proxy (
         },
       },
     }
-    nginx::resource::server { "${server_name}:8142":
-      proxy => "${upstream_puppet_server}:8142",
+    nginx::resource::server { "${server_name}_8142":
+      proxy => "${upstream_puppet_server}_8142",
     }
   }
 }
