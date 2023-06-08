@@ -93,21 +93,32 @@ class pe_dmz_agent_proxy (
       before     => Class['nginx'],
     }
 
-    Selinux::Port {
-      ensure   => present,
-      seltype  => 'puppet_port_t',
-      protocol => 'tcp',
-      before   => Class['nginx'],
-    }
-
     if $enable_puppet {
-      selinux::port { 'tcp_socket_8140': port => 8140, }
+      selinux::port { 'tcp_socket_8140':
+        ensure   => present,
+        port     => 8140,
+        seltype  => 'puppet_port_t',
+        protocol => 'tcp',
+        before   => Class['nginx'],
+      }
     }
     if $enable_pxp {
-      selinux::port { 'tcp_socket_8142': port => 8142, }
+      selinux::port { 'tcp_socket_8142':
+        ensure   => present,
+        port     => 8142,
+        seltype  => 'puppet_port_t',
+        protocol => 'tcp',
+        before   => Class['nginx'],
+      }
     }
     if $enable_comply {
-      selinux::port { 'tcp_socket_30303': port => 30303, }
+      selinux::port { 'tcp_socket_30303':
+        ensure   => present,
+        port     => 30303,
+        seltype  => 'puppet_port_t',
+        protocol => 'tcp',
+        before   => Class['nginx'],
+      }
     }
   }
 }
