@@ -92,7 +92,7 @@ class pe_dmz_agent_proxy (
   if $enable_firewalld_config {
     Firewalld_port {
       ensure   => present,
-      proto    => 'tcp',
+      protocol => 'tcp',
       zone     => 'public',
       before   => Class['nginx'],
     }
