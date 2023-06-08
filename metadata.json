@@ -2,13 +2,25 @@
   "name": "psreed-pe_dmz_agent_proxy",
   "version": "0.1.0",
   "author": "Paul Reed",
-  "summary": "",
+  "summary": "Creates a proxy to forward Puppet Agent, Puppet Orchestrator (PXP-Agent) and Comply traffic from a network isolated segement.",
   "license": "Apache-2.0",
   "source": "https://github.com/psreed/pe_dmz_agent_proxy.git",
   "dependencies": [
     {
       "name": "puppet/nginx",
       "version_requirement": ">= 4.3.0 < 5.0.0"
+    },
+    {
+      "name": "puppetlabs/selinux_core",
+      "version_requirement": ">= 1.3.0 < 2.0.0"
+    },
+    {
+      "name": "puppet/selinux",
+      "version_requirement": ">= 3.4.1 < 4.0.0"
+    },
+    {
+      "name": "puppetlabs/firewall",
+      "version_requirement": ">= 5.0.0 < 6.0.0"
     }
   ],
   "operatingsystem_support": [
