@@ -59,7 +59,7 @@ class pe_dmz_agent_proxy (
   }
 
   # Proxy for Puppet Comply (TCP Port 30303)
-  if $enable_pxp {
+  if $enable_comply {
     nginx::resource::streamhost { 'proxy_stream_30303':
       listen_port => 30303,
       proxy       => "${upstream_comply_server}:30303",
