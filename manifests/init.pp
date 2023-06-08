@@ -71,7 +71,6 @@ class pe_dmz_agent_proxy (
     Firewall {
       proto    => 'tcp',
       action   => 'accept',
-      provider => 'ip6tables',
       before   => Class['nginx'],
     }
     if $enable_puppet {
