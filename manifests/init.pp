@@ -75,13 +75,13 @@ class pe_dmz_agent_proxy (
       before   => Class['nginx'],
     }
     if $enable_puppet {
-      firewall { 'Allow Puppet Agent TCP 8140 Inbound': dport => 8140, }
+      firewall { '001 Allow Puppet Agent TCP 8140 Inbound': dport => 8140, }
     }
     if $enable_pxp {
-      firewall { 'Allow Puppet Orchestrator Agent TCP 8142 Inbound': dport => 8142, }
+      firewall { '001 Allow Puppet Orchestrator Agent TCP 8142 Inbound': dport => 8142, }
     }
     if $enable_comply {
-      firewall { 'Allow Puppet Comply TCP 30303 Inbound': dport => 30303, }
+      firewall { '001 Allow Puppet Comply TCP 30303 Inbound': dport => 30303, }
     }
   }
 
