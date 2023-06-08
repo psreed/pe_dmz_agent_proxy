@@ -22,7 +22,10 @@
 # - Enable configuration requirements for SELinux 
 #
 # @param enable_firewall_config
-# - Enable configuration requirements for firewalld based firewall
+# - Enable configuration requirements for iptables based firewalls
+#
+# @param enable_firewalld_config
+# - Enable configuration requirements for firewalld based firewalls
 #
 class pe_dmz_agent_proxy (
   String $upstream_puppet_server  = 'pe.example.com',
@@ -31,7 +34,8 @@ class pe_dmz_agent_proxy (
   Boolean $enable_pxp             = true,
   Boolean $enable_comply          = false,
   Boolean $enable_selinux_config  = true,
-  Boolean $enable_firewall_config = true,
+  Boolean $enable_firewall_config = false,
+  Boolean $enable_firewalld_config = true,
 ) {
   # NGINX Configuration
   class { 'nginx':
@@ -66,7 +70,7 @@ class pe_dmz_agent_proxy (
     }
   }
 
-  # Firewalld configuration
+  # Firewall (iptables) configuration
   if $enable_firewall_config {
     Firewall {
       proto    => 'tcp',
@@ -81,6 +85,25 @@ class pe_dmz_agent_proxy (
     }
     if $enable_comply {
       firewall { '001 Allow Puppet Comply TCP 30303 Inbound': dport => 30303, }
+    }
+  }
+
+  # Firewalld configuration
+  if $enable_firewalld_config {
+    Firewalld_port {
+      ensure   => present,
+      proto    => 'tcp',
+      zone     => 'public',
+      before   => Class['nginx'],
+    }
+    if $enable_puppet {
+      firewalld_port { 'Allow Puppet Agent TCP 8140 Inbound': port => 8140, }
+    }
+    if $enable_pxp {
+      firewalld_port { 'Allow Puppet Orchestrator Agent TCP 8142 Inbound': port => 8142, }
+    }
+    if $enable_comply {
+      firewalld_port { 'Allow Puppet Comply TCP 30303 Inbound': port => 30303, }
     }
   }
 
