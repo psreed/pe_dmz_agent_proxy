@@ -21,21 +21,29 @@
 # @param enable_selinux_config
 # - Enable configuration requirements for SELinux 
 #
-# @param enable_firewall_config
-# - Enable configuration requirements for iptables based firewalls
+# @param enable_iptables_config
+# - Enable configuration for IPTables based firewalls. Typically for RHEL 7 and variants.
 #
 # @param enable_firewalld_config
-# - Enable configuration requirements for firewalld based firewalls
+# - Enable configuration requirements for firewalld based firewalls. Typically for RHEL 8+ and variants.
+# 
+# @param enable_ufw_config
+# - Enable configuration requirements for UFW based firewalls. Typically for Ubuntu and Debian system types.
+#   Note: UFW support assumes using the forge module for UFW found at:
+#   https://forge.puppet.com/modules/kogitoapp/ufw/readme
+#   As of 2024-02-18: This module is not yet supported with Puppet 8, however it seems to work fine and no alternative is yet available.
 #
 class pe_dmz_agent_proxy (
-  String $upstream_puppet_server  = 'pe.example.com',
-  String $upstream_comply_server  = 'comply.example.com',
-  Boolean $enable_puppet          = true,
-  Boolean $enable_pxp             = true,
-  Boolean $enable_comply          = false,
-  Boolean $enable_selinux_config  = true,
-  Boolean $enable_firewall_config = false,
-  Boolean $enable_firewalld_config = true,
+  String $upstream_puppet_server   = 'pe.example.com',
+  String $upstream_comply_server   = 'comply.example.com',
+  Boolean $enable_puppet           = true,
+  Boolean $enable_pxp              = true,
+  Boolean $enable_comply           = false,
+  Boolean $enable_selinux_config   = false,
+  Boolean $enable_iptables_config  = false,
+  Boolean $enable_firewalld_config = false,
+  Boolean $enable_ufw_config       = false,
+
 ) {
   # NGINX Configuration
   class { 'nginx':
@@ -71,7 +79,7 @@ class pe_dmz_agent_proxy (
   }
 
   # Firewall (iptables) configuration
-  if $enable_firewall_config {
+  if $enable_iptables_config {
     Firewall {
       proto    => 'tcp',
       action   => 'accept',
@@ -104,6 +112,26 @@ class pe_dmz_agent_proxy (
     }
     if $enable_comply {
       firewalld_port { 'Allow Puppet Comply TCP 30303 Inbound': port => 30303, }
+    }
+  }
+
+  # UFW configuration
+  if $enable_ufw_config {
+    Ufw_rule {
+      ensure       => present,
+      action       => 'allow',
+      direction    => 'in',
+      interface    => undef,
+      proto        => 'tcp',
+    }
+    if $enable_puppet {
+      ufw_rule { 'Allow Puppet Agent TCP 8140 Inbound': to_ports_app => 8140, }
+    }
+    if $enable_pxp {
+      ufw_rule { 'Allow Puppet Orchestrator Agent TCP 8142 Inbound': to_ports_app => 8142, }
+    }
+    if $enable_comply {
+      ufw_rule { 'Allow Puppet Comply TCP 30303 Inbound': to_ports_app => 30303, }
     }
   }
 
